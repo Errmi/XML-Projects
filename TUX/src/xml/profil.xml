@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this template
+-->
+
+
+
+<dico:profil
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:dico='http://myGame/tux'
+    xsi:schemaLocation='http://myGame/tux ../xsd/dico.xsd
+                        http://myGame/tux ../xsd/profil.xsd'>
+    
+    <dico:nom>Alban</dico:nom>
+    <dico:avatar>conan.jpg</dico:avatar>
+    <dico:anniversaire>2006-05-08</dico:anniversaire>
+    <dico:parties>
+        <dico:partie date="2013-12-10">
+            <dico:temps>20.0</dico:temps>
+            <dico:mot niveau="1">cle</dico:mot>
+        </dico:partie>
+        <dico:partie date="2013-12-11" trouvé="75%">
+            <dico:mot niveau="2">indice</dico:mot>
+        </dico:partie>
+        <dico:partie date="2013-12-11">
+            <dico:temps>20.0</dico:temps>
+            <dico:mot niveau="2">indice</dico:mot>
+        </dico:partie>
+    </dico:parties>
+
+</dico:profil>

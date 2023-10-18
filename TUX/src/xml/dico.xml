@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this template
+-->
+
+
+
+<ns1:dico
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ns1='http://myGame/tux'
+    xsi:schemaLocation='http://myGame/tux ../xsd/dico.xsd'>
+    
+        <ns1:mot niveau="1">mot</ns1:mot>
+        <ns1:mot niveau="1">cle</ns1:mot>
+        <ns1:mot niveau="2">indice</ns1:mot>
+        <ns1:mot niveau="2">fermer</ns1:mot>
+        <ns1:mot niveau="3">parallèle</ns1:mot>
+        <ns1:mot niveau="4">méditerranée</ns1:mot>
+        <ns1:mot niveau="5">kinésithérapeute</ns1:mot>
+
+</ns1:dico>
+

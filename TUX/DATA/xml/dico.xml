@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this template
+-->
+
+<dictionnaire>
+    <mot niveau="1">mot</mot>
+    <mot niveau="2">fermer</mot>
+    <mot niveau="3">parallèle</mot>
+    <mot niveau="4">méditerranée</mot>
+    <mot niveau="5">kinésithérapeute</mot>
+</dictionnaire>
