@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/XML/XmlSchema.xsd to edit this template
+-->
+
+<xs:schema targetNamespace="http://www.ujf-grenoble.fr/l3miage/medical"
+           xmlns="http://www.ujf-grenoble.fr/l3miage/medical"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+    <xs:element name="soinsGrenoble" type="Cabinet"/>
+
+    <xs:complexType name="Cabinet">
+        <xs:sequence>
+            <xs:element name="nom" type="NomRueVilleString"/>
+            <xs:element name="adresse" type="Adresse"/>
+            <xs:element name="infirmiers" type="Infirmiers"/>
+            <xs:element name="patients" type="Patients" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence> 
+    </xs:complexType>
+
+    <!--Restricting names and road addresses (should restrict length as well?)-->
+    <xs:simpleType name="NomRueVilleString">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="/^[ a-zA-ZÀ-ÿ\u00f1\u00d1]*$/g"/> <!--Matches letters, accents and spaces except from spaces at beginning-->
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Adresse">
+        <xs:sequence>
+            <xs:element name="étage" type="ÉtageInt" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="numéro" type="xs:int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="rue" type="NomEtRueString"/>
+            <xs:element name="codePostal" type="CodePostalString"/>
+            <xs:element name="ville" type="NomRueVilleString"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="ÉtageInt">
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CodePostalString">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{5}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Infirmiers">
+        <xs:sequence>
+            <xs:element name="infirmier" type="Infirmier" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Infirmier">
+        <xs:complexContent>
+            <xs:extension base="Personne">
+                <xs:sequence>
+                    <xs:element name="photo" type="PhotoString" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="id" type="IdInfirmierOuActe" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="PhotoString">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="IdInfirmierOuActe">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="Patients">
+        <xs:sequence>
+            <xs:element name="patient" type="Patient" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Patient">
+        <xs:complexContent>
+            <xs:extension base="Personne">
+                <xs:sequence>
+                    <xs:element name="sexe" type="Sexe"/>
+                    <xs:element name="naissance" type="NaissanceDate"/>
+                    <xs:element name="numéro" type="NrSécuritéSociale"/>
+                    <xs:element name="adresse" type="Adresse"/>
+                    <xs:element name="visite" type="Visite" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="Sexe">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="H"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="NaissanceDate">
+        <xs:restriction base="xs:date">
+            <xs:minInclusive value="1885-01-01"/>
+            <xs:minInclusive value="2015-12-07"/> <!--Current date, would have to be updated every day...-->
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="NrSécuritéSociale">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="/
+            [12][0-9]{2}(0[1-9]|1[0-2])(2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}([0-9]{2})
+            /"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+
+    <xs:complexType name="Personne">
+        <xs:sequence>
+            <xs:element name="nom" type="NomRueVilleString"/>
+            <xs:element name="prénom" type="NomRueVilleString"/>   
+        </xs:sequence>    
+    </xs:complexType>
+
+    <xs:complexType name="Visite">
+        <xs:sequence>
+            <xs:element name="acte" type="Acte"/>
+        </xs:sequence>
+        <xs:attribute name="date" type="xs:date" use="required"/>
+        <xs:attribute name="intervenant" type="IdInfirmierOuActe"/> <!--Feil? Må være eksisterende id?-->
+    </xs:complexType>
+
+    <xs:complexType name="Acte">
+        <xs:attribute name="id" type="IdInfirmierOuActe" use="required"/>
+    </xs:complexType>
+
+</xs:schema>
