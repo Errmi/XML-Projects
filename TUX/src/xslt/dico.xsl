@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-    Document   : dico.xsl
-    Created on : 17 octobre 2023, 16:28
-    Author     : belguitr
-    Description:
-        Purpose of transformation follows.
--->
-
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-                xmlns:dico= "http://myGame/tux" version="1.0">
-    
-    
+                xmlns:dico="http://myGame/tux"
+                version="1.0">
+
     <xsl:output method="html"/>
 
-    
-    
-    
     <!-- template for the dico document-->
     <xsl:template match="/">
         <html>
@@ -24,7 +13,7 @@
                 <title>dico.xsl</title>
             </head>
             <body>
-            <table>
+                <table>
                     <tr>
                         <td>
                             Mot
@@ -33,24 +22,21 @@
                             Niveau
                         </td>
                     </tr>
-                   
-
                     <xsl:apply-templates select="//dico:mot">
-                        <xsl:sort select="@niveau" order="ascending"/>
-                        <xsl:sort select="text()" order="descending"/>
+                        <xsl:sort select="@niveau" data-type="number" order="ascending"/>
+                        <xsl:sort select="text()" order="ascending"/>
                     </xsl:apply-templates>
                 </table>
             </body>
         </html>
     </xsl:template>
-    
-    
+
     <!-- template for each Mot 
     va afficher : 
     - un mot
     - un niveau
     -->
-<xsl:template match="dico:mot">
+    <xsl:template match="dico:mot">
         <tr>
             <td>
                 <xsl:value-of select="text()"/>
@@ -62,3 +48,4 @@
     </xsl:template>
 
 </xsl:stylesheet>
+
