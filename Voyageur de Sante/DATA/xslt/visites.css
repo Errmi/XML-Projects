@@ -1,0 +1,25 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 07.nov.2023, 16:53:52
+    Author     : saraengesvik
+*/
+
+body {
+  background-color: lightblue;
+}
+
+h1 {
+  color: navy;
+  margin-left: 20px;
+}
+
+table, td, tr {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    border: solid;
+    border-collapse: collapse;
+}
