@@ -69,7 +69,7 @@
                 
                 Visites:
                 <table>
-                    <xsl:apply-templates select="$visitesDuJour">
+                    <xsl:apply-templates select="$visitesDuJour/parent::med:patient">
                         <xsl:sort select="@date" order="ascending"/>
                     </xsl:apply-templates>
                 </table>
@@ -79,36 +79,48 @@
     
     <!--Template for :    
     1. Affiche nom et adresse du patient que l'infirmier va visiter
-    2. Affiche la liste des soins à effectuer. 
+    2. Affiche la liste des soins à effectuer: Le date de visite, et apply un
+       autre template qui affiche chaque acte (numéro et text)
     3. Ajouter un bouton "Facture" qui ouvrira une nouvelle fenêtre avec la 
        facture correspondante pour le patient. Un attribut qui appelle 
        le méthode (javascript) "openFacture" pour qu'un fenêtre s'affiche en 
        cliquant le bouton. -->
-    <xsl:template match="med:visite[@intervenant=$destinedId]">
+    <xsl:template match="med:patient">
         <tr>
-            <td><xsl:value-of select="//med:patient/med:nom/text()"/>, 
-                <xsl:value-of select="//med:patient/med:prénom/text()"/><br/><br/>
-                <xsl:value-of select="//med:patient/med:adresse/med:numéro"/><xsl:text> </xsl:text>
-                <xsl:value-of select="//med:patient/med:adresse/med:rue"/>,<br/>
-                <xsl:value-of select="//med:patient/med:adresse/med:codePostal"/><xsl:text> </xsl:text>
-                <xsl:value-of select="//med:patient/med:adresse/med:ville"/>
+            <td>
+                <xsl:value-of select="med:nom/text()"/>, 
+                <xsl:value-of select="med:prénom/text()"/><br/><br/>
+                <xsl:value-of select="med:adresse/med:numéro"/><xsl:text> </xsl:text>
+                <xsl:value-of select="med:adresse/med:rue"/>,<br/>
+                <xsl:value-of select="med:adresse/med:codePostal"/><xsl:text> </xsl:text>
+                <xsl:value-of select="med:adresse/med:ville"/>
             </td>
             <td>
-                <xsl:value-of select="@date"/>, acte 
-                <xsl:value-of select="med:acte/@id"/>: 
-                <xsl:value-of select="$actes/act:actes/act:acte[@id=$visitesDuJour/med:acte/@id]"/><br/>
+                <xsl:value-of select="med:visite/@date"/><br/>
+                <xsl:apply-templates select="med:visite/med:acte"/>
                 
-                <button>Facture</button>
-                <xsl:attribute name="onclick">
-                    openFacture('<xsl:value-of select="//med:patient/med:prénom/text()"/>', 
-                                '<xsl:value-of select="//med:patient/med:nom/text()"/>', 
-                                '<xsl:value-of select="$actes/act:actes/act:acte[@id=$visitesDuJour/med:acte/@id]"/>')
-                </xsl:attribute>
+                <!--Variable pour le ID des actes-->
+                <xsl:variable name="actesId" select="med:visite/med:acte/@id"/>
+                
+                <input>
+                    <xsl:attribute name="type">button</xsl:attribute>
+                    <xsl:attribute name="value">Fracture</xsl:attribute>
+                    <xsl:attribute name="onclick">
+                    openFacture('<xsl:value-of select="med:prénom/text()"/>', 
+                                '<xsl:value-of select="med:nom/text()"/>', 
+                                '<xsl:copy-of select="$actes/act:actes/act:acte[@id=$actesId]"/>')
+                    </xsl:attribute>
+                </input>
             </td>
         </tr>
-        <tr>
-            
-        </tr>
+    </xsl:template>
+   
+   <!--Template pour afficher le numéro et text (de document XML actes.xml)-->
+    <xsl:template match="med:acte">
+        <xsl:variable name="acteId" select="@id"/>
+        acte 
+        <xsl:value-of select="$acteId"/>: 
+        <xsl:value-of select="$actes/act:actes/act:acte[@id=$acteId]"/><br/>
     </xsl:template>
    
 </xsl:stylesheet>
