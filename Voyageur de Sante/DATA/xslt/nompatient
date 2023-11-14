@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+                xmlns:med="http://www.ujf-grenoble.fr/l3miage/medical" 
+                xmlns:act="http://www.ujf-grenoble.fr/l3miage/actes"
+                version="1.0">
+
+    <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+
+    <xsl:param name="destinedName" select="'Pien'"/>
+
+    <xsl:template match="/">
+        <patient>
+            <xsl:apply-templates select="med:soinsGrenoble/med:patients/med:patient[med:nom = $destinedName]"/>
+        </patient>
+    </xsl:template>
+
+    <xsl:template match="med:patient">
+        <nom><xsl:value-of select="med:nom"/></nom>
+        <prénom><xsl:value-of select="med:prénom"/></prénom>
+        <sexe><xsl:value-of select="med:sexe"/></sexe>
+        <naissance><xsl:value-of select="med:naissance"/></naissance>
+        <numéroSS><xsl:value-of select="med:numéro"/></numéroSS>
+        <adresse>
+            <rue><xsl:value-of select="med:adresse/med:rue"/></rue>
+            <codePostal><xsl:value-of select="med:adresse/med:codePostal"/></codePostal>
+            <ville><xsl:value-of select="med:adresse/med:ville"/></ville>
+        </adresse>
+
+
+        <xsl:apply-templates select="med:visite"/>
+        
+    </xsl:template>
+
+<xsl:template match="med:visite">
+    <visite date="{@date}">
+        <intervenant>
+            <nom><xsl:value-of select="//med:infirmiers/med:infirmier[@id = current()/@intervenant]/med:nom"/></nom>
+            <prénom><xsl:value-of select="//med:infirmiers/med:infirmier[@id = current()/@intervenant]/med:prénom"/></prénom>
+        </intervenant>
+        <acte><xsl:variable name="actesId" select="med:visite/med:acte/@id"/></acte>
+    </visite>
+</xsl:template>
+
+
+</xsl:stylesheet>
