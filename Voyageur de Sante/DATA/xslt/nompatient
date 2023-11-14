@@ -5,6 +5,9 @@
                 version="1.0">
 
     <xsl:output method="xml" encoding="UTF-8" indent="yes"/>
+    
+    <!--Variable pour piocher des informations des actes dans document XML "actes.xml"-->
+    <xsl:variable name="actes" select="document('actes.xml', /)/act:ngap"/>
 
     <xsl:param name="destinedName" select="'Pien'"/>
 
@@ -37,9 +40,9 @@
             <nom><xsl:value-of select="//med:infirmiers/med:infirmier[@id = current()/@intervenant]/med:nom"/></nom>
             <prénom><xsl:value-of select="//med:infirmiers/med:infirmier[@id = current()/@intervenant]/med:prénom"/></prénom>
         </intervenant>
-        <acte><xsl:variable name="actesId" select="med:visite/med:acte/@id"/></acte>
+        <xsl:variable name="id" select="med:acte/@id"/>
+        <acte><xsl:copy-of select="$actes/act:actes/act:acte[@id=$id]/text()"/></acte>
     </visite>
 </xsl:template>
-
 
 </xsl:stylesheet>
