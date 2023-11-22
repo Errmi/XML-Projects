@@ -25,7 +25,7 @@ public class Dico {
     private ArrayList<String> listeNiveau5;
     private String cheminFichierDico;
     
-    public Dico(String cheminFichierDico) {
+    public Dico(String cheminFichierDico) throws SAXException, IOException {
         this.cheminFichierDico = cheminFichierDico;
         
         listeNiveau1 = new ArrayList<String>();
