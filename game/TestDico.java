@@ -5,6 +5,8 @@
 package test;
 
 import game.Dico;
+import java.io.IOException;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -12,7 +14,9 @@ import game.Dico;
  */
 public class TestDico {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SAXException, IOException {
+
+        /*// Test self iniated words
         Dico dico = new Dico("/random/folder");
         
         String[] mots1 = new String[] {"mot", "fin", "but", "lait", "ami"};
@@ -44,5 +48,18 @@ public class TestDico {
         System.out.println("Mot niveau 3 (vide - should print 'tux'): " + dico.getMotDepuisListeNiveaux(3));
         System.out.println("Mot niveau 4: " + dico.getMotDepuisListeNiveaux(4));
         System.out.println("Mot niveau 5: " + dico.getMotDepuisListeNiveaux(5));
+        */
+        
+        // Test DOM parser - read dictrionnary from xml file
+        Dico dico = new Dico("src/xml/xml/");
+        
+        System.out.println("Mot niveau 1: " + dico.getMotDepuisListeNiveaux(1));
+        System.out.println("Mot niveau 1: " + dico.getMotDepuisListeNiveaux(1));
+        System.out.println("Mot niveau 1: " + dico.getMotDepuisListeNiveaux(1));
+        System.out.println("Mot niveau 2: " + dico.getMotDepuisListeNiveaux(2));
+        System.out.println("Mot niveau 3: " + dico.getMotDepuisListeNiveaux(3));
+        System.out.println("Mot niveau 4: " + dico.getMotDepuisListeNiveaux(4));
+        System.out.println("Mot niveau 5: " + dico.getMotDepuisListeNiveaux(5));
+        
     }
 }
