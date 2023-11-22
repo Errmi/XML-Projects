@@ -15,18 +15,47 @@ public class Jeu {
     private Room room;
     private Profil profil ;
     private Tux tux;
+    private ArrayList<Letter> lettres;
+    private Dico dico;
+    
     public Jeu(){
         
             // Crée un nouvel environnement
             env = new Env();
-           
-
 
             // Instancie une Room
             room = new Room();
             
             tux = new Tux(env,room);
+
+            // Instancie une Dico
+            dico = new Dico("/random/folder");
             
+            String[] mots1 = new String[] {"mot", "fin", "but", "lait", "ami"};
+            String[] mots2 = new String[] {"forme", "texte", "jambon", "pomme", "titre"};
+            String[] mots3 = new String[] {"vanille", "fichier", "argument", "unique", "ouvrier"};
+            String[] mots4 = new String[] {"information", "philosophe", "correspondre", "travaille", "expression"};
+            String[] mots5 = new String[] {"impitoyable", "obligatoirement", "reconnaissance", "realisateur", "adolescence"};
+            
+            for (String s : mots1) {
+                dico.ajouteMotADico(1, s);
+            }
+            
+            for (String s : mots2) {
+                dico.ajouteMotADico(2, s);
+            }
+            
+            for (String s : mots3) {
+                dico.ajouteMotADico(3, s);
+            }
+            
+            for (String s : mots4) {
+                dico.ajouteMotADico(4, s);
+            }
+            
+            for (String s : mots5) {
+                dico.ajouteMotADico(5, s);
+            }
 
             // Règle la camera
             env.setCameraXYZ(50, 60, 175);
@@ -60,6 +89,21 @@ public class Jeu {
         // Instancie un Tux
         //tux = //?!!?;
         //env.addObject(//?!!?;);
+
+        // Instancie des Lettres
+        lettres = new ArrayList<Letter>();
+        String mot = dico.getMotDepuisListeNiveaux(1);
+        
+        for (int i = 0; i < mot.length(); i++) {
+            double x = Math.random() * 100;
+            double z = Math.random() * 100;
+            Letter l = new Letter(env, room, mot.charAt(i), x, z);
+            lettres.add(l);
+        }
+
+        for (Letter l : lettres) {
+            env.addObject(l);
+        }
          
         // Ici, on peut initialiser des valeurs pour une nouvelle partie
         démarrePartie(partie);
