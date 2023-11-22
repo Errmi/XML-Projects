@@ -4,8 +4,14 @@
  */
 package game;
 
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -27,6 +33,8 @@ public class Dico {
         listeNiveau3 = new ArrayList<String>();
         listeNiveau4 = new ArrayList<String>();
         listeNiveau5 = new ArrayList<String>();
+
+        lireDictionnaireDOM(cheminFichierDico, "dico.xml");
     }
     
     public String getMotDepuisListeNiveaux(int niveau) {
@@ -91,11 +99,31 @@ public class Dico {
         String mot = "tux";     // Mot par default
         
         if (!list.isEmpty()) {  // If the list is not empty, get mot from list
-            int randomNr = (int) (Math.random() * 5.0);     // Random nr between 0-4
+            int randomNr = (int) (Math.random() * list.size());     // Random nr between 0-4
             mot = list.get(randomNr);
         } 
             
         return mot;
+    }
+
+    private void lireDictionnaireDOM(String path, String filename) throws SAXException, IOException {
+        DOMParser parser = new DOMParser();
+        parser.parse(path + filename);
+        Document doc = parser.getDocument();
+        
+        NodeList motsNL = doc.getElementsByTagName("tux:mot");
+        int nbMots = motsNL.getLength();
+        System.out.println(nbMots);
+        
+        for (int i = 0; i < nbMots; i++) {
+            Element currentMot = (Element) motsNL.item(i);
+            int niveau = Integer.parseInt(currentMot.getAttribute("niveau"));
+            niveau = vérifieNiveau(niveau);
+            Node motNd = motsNL.item(i);
+            String mot = motNd.getTextContent();
+            
+            ajouteMotADico(niveau, mot);
+        }
     }
     
 }
