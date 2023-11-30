@@ -4,15 +4,19 @@
  */
 package game;
 
+import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
+
 /**
  *
  * @author belguitr
  */
 public class LanceurDeJeu {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws SAXException, IOException, ParserConfigurationException {
         // Declare un Jeu
         Jeu jeu;
-        jeu = new Jeu();
+        jeu = new JeuDevineLeMotOrdre(10);
         jeu.execute();
         //Instancie un nouveau jeu
         //?!!?;
