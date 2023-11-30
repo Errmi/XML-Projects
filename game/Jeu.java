@@ -1,99 +1,53 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package game;
 
 import env3d.Env;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
-/**
- *
- * @author belguitr
- */
 public class Jeu {
-    private Env env ;
-    private Room room;
-    private Profil profil ;
-    private Tux tux;
-    private ArrayList<Letter> lettres;
-    private Dico dico;
+    private Env env; // Environnement 3D
+    private Room room; // Salle du jeu
+    private Profil profil; // Profil du joueur
+    private Tux tux; // Personnage du joueur
+    private ArrayList<Letter> lettres; // Liste des lettres dans le jeu
+    private Dico dico; // Dictionnaire de mots
     
-    public Jeu(){
-        
-            // Crée un nouvel environnement
-            env = new Env();
 
-            // Instancie une Room
-            room = new Room();
-            
-            tux = new Tux(env,room);
+    // Constructeur du jeu
+    public Jeu() throws SAXException, IOException, ParserConfigurationException {
+        env = new Env(); // Crée un nouvel environnement
+        room = new Room(); // Instancie une salle
+        tux = new Tux(env, room); // Instancie le personnage Tux
+        dico = new Dico("src/xml/xml"); // Instancie le dictionnaire
 
-            // Instancie une Dico
-            dico = new Dico("/random/folder");
-            
-            String[] mots1 = new String[] {"mot", "fin", "but", "lait", "ami"};
-            String[] mots2 = new String[] {"forme", "texte", "jambon", "pomme", "titre"};
-            String[] mots3 = new String[] {"vanille", "fichier", "argument", "unique", "ouvrier"};
-            String[] mots4 = new String[] {"information", "philosophe", "correspondre", "travaille", "expression"};
-            String[] mots5 = new String[] {"impitoyable", "obligatoirement", "reconnaissance", "realisateur", "adolescence"};
-            
-            for (String s : mots1) {
-                dico.ajouteMotADico(1, s);
-            }
-            
-            for (String s : mots2) {
-                dico.ajouteMotADico(2, s);
-            }
-            
-            for (String s : mots3) {
-                dico.ajouteMotADico(3, s);
-            }
-            
-            for (String s : mots4) {
-                dico.ajouteMotADico(4, s);
-            }
-            
-            for (String s : mots5) {
-                dico.ajouteMotADico(5, s);
-            }
+        // Réglage de la caméra
+        env.setCameraXYZ(50, 60, 175);
+        env.setCameraPitch(-20);
 
-            // Règle la camera
-            env.setCameraXYZ(50, 60, 175);
-            env.setCameraPitch(-20);
+        // Désactive les contrôles par défaut
+        env.setDefaultControl(false);
 
-            // Désactive les contrôles par défaut
-            env.setDefaultControl(false);
-
-            // Instancie un profil par défaut
-            profil = new Profil();
-            
+        profil = new Profil(); // Instancie un profil par défaut
     }
-    
-    public void execute() {
 
-        // pour l'instant, nous nous contentons d'appeler la méthode joue comme cela
-        // et nous créons une partie vide, juste pour que cela fonctionne
+    // Méthode pour exécuter le jeu
+    public void execute() {
         joue(new Partie());
-         
-        // Détruit l'environnement et provoque la sortie du programme 
         env.exit();
     }
-    
-         
-         
-    public void joue(Partie partie) {
- 
-        // TEMPORAIRE : on règle la room de l'environnement. Ceci sera à enlever lorsque vous ajouterez les menus.
-        env.setRoom(room);
- 
-        // Instancie un Tux
-        //tux = //?!!?;
-        //env.addObject(//?!!?;);
+    protected ArrayList<Letter> getLettres() {
+    return lettres;
+    }
 
-        // Instancie des Lettres
+    // Méthode principale du jeu
+    public void joue(Partie partie) {
+        env.setRoom(room); // Régle la salle dans l'environnement
         lettres = new ArrayList<Letter>();
-        String mot = dico.getMotDepuisListeNiveaux(1);
-        
+        String mot = dico.getMotDepuisListeNiveaux(2);
+
+        // Création et ajout des lettres aléatoires dans la salle
         for (int i = 0; i < mot.length(); i++) {
             double x = Math.random() * 100;
             double z = Math.random() * 100;
@@ -102,48 +56,92 @@ public class Jeu {
         }
 
         for (Letter l : lettres) {
-            env.addObject(l);
+            env.addObject(l); // Ajoute chaque lettre à l'environnement
         }
-         
-        // Ici, on peut initialiser des valeurs pour une nouvelle partie
-        démarrePartie(partie);
-         
-        // Boucle de jeu
-        Boolean finished;
-        finished = false;
-        env.addObject(tux);
-        
+
+        démarrePartie(partie); // Initialise la partie
+
+        Boolean finished = false;
+        env.addObject(tux); // Ajoute le personnage Tux à l'environnement
+
         while (!finished) {
- 
-            // Contrôles globaux du jeu (sortie, ...)
-            //1 is for escape key
-            if (env.getKey() == 1) {
-                finished = true;
+            if    ( (env.getKey() == 1) || lettres.isEmpty() )  {
+                finished = true; // Sort de la boucle si la touche Escape est pressée
             }
- 
-            // Contrôles des déplacements de Tux (gauche, droite, ...)
-            // ... (sera complété plus tard) ...
+
+            // Sauvegarde la position actuelle de Tux
+            double tuxXBeforeMove = tux.getX();
+            double tuxZBeforeMove = tux.getZ();
+
+            // Déplace Tux
             tux.déplace();
- 
-            // Ici, on applique les regles
-            appliqueRegles(partie);
- 
-            // Fait avancer le moteur de jeu (mise à jour de l'affichage, de l'écoute des événements clavier...)
-            env.advanceOneFrame();
+
+            // Vérifie les collisions après le déplacement
+            boolean collisionDetected = false;
+            for (int i = 0; i < lettres.size(); i++) {
+                Letter letter = lettres.get(i);
+                if (collision(letter)) {
+                    collisionDetected = true;
+
+                    // Vérifie si la collision est avec la première lettre (à l'index 0)
+                    if (i == 0) {
+                        // Supprime la première lettre de l'ArrayList et de l'environnement
+                        lettres.remove(i);
+                        env.removeObject(letter);
+                    }
+
+                    break; // Sort de la boucle si une collision est détectée
+                }
+            }
+
+            // Si une collision est détectée, rétablit la position de Tux
+            if (collisionDetected) {
+                tux.setX(tuxXBeforeMove);
+                tux.setZ(tuxZBeforeMove);
+            }
+
+            appliqueRegles(partie); // Applique les règles de la partie
+
+            env.advanceOneFrame(); // Fait avancer le moteur de jeu (mise à jour de l'affichage, des événements, etc.)
         }
- 
-        // Ici on peut calculer des valeurs lorsque la partie est terminée
-        terminePartie(partie);
- 
-    }    
-    protected void démarrePartie(Partie partie){
+
+        terminePartie(partie); // Termine la partie
     }
-    protected void appliqueRegles(Partie partie){
+
+    // Méthode appelée au démarrage d'une nouvelle partie
+    protected void démarrePartie(Partie partie) {
+        // Logique supplémentaire
     }
-    protected void terminePartie(Partie partie){
+
+    // Méthode pour appliquer les règles du jeu
+    protected void appliqueRegles(Partie partie) {
+        for (Letter letter : lettres) {
+            if (collision(letter)) {
+                // Logique de gestion des collisions ici
+            }
+        }
+        // Autres règles du jeu peuvent être ajoutées ici
     }
-    
-    
-    
-    
+
+    // Méthode appelée à la fin de la partie
+    protected void terminePartie(Partie partie) {
+        // Logique supplémentaire à la fin de la partie
+    }
+
+    // Méthode pour calculer la distance entre Tux et une lettre
+    protected double distance(Letter letter) {
+        double tuxX = tux.getX();
+        double tuxZ = tux.getZ();
+        double letterX = letter.getX();
+        double letterZ = letter.getZ();
+
+        return Math.sqrt(Math.pow(tuxX - letterX, 2) + Math.pow(tuxZ - letterZ, 2));
+    }
+
+    // Méthode pour vérifier s'il y a une collision entre Tux et une lettre
+    protected boolean collision(Letter letter) {
+        double distance = distance(letter);
+
+        return distance < tux.getScale() + letter.getScale();
+    }
 }
