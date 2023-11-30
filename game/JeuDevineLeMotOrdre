@@ -1,0 +1,56 @@
+package game;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
+
+public class JeuDevineLeMotOrdre extends Jeu {
+    private int nbLettresRestantes;
+    private Chronometre chrono;
+
+    public JeuDevineLeMotOrdre(int limite) throws SAXException, IOException, ParserConfigurationException {
+        super();
+        chrono = new Chronometre(limite);
+    }
+
+    // Override the execute method to start the timer before calling the parent execute method
+    @Override
+    public void execute() {
+        chrono.start(); // Start the timer
+        super.execute(); // Call the parent execute method
+        chrono.stop(); // Stop the timer when the game execution is finished
+    }
+
+    // Override the joue method to check the timer and update game logic accordingly
+    @Override
+    public void joue(Partie partie) {
+                if (!chrono.remainsTime()) {
+                    terminePartie(partie);
+        }
+        super.joue(partie); // Call the parent joue method
+        
+
+    }
+
+private boolean tuxTrouveLettre() {
+    ArrayList<Letter> lettres = getLettres();
+    for (Letter lettre : lettres) {
+        if (collision(lettre)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+private int getNBLettersRestantes() {
+    // Add logic to calculate the number of remaining letters
+    ArrayList<Letter> lettres = getLettres();
+    return lettres.size();
+}
+
+    private int getTemps() {
+        // Add logic to get the elapsed time from the timer
+        return (int) chrono.getSeconds();
+    }
+}
