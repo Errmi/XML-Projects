@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
-public class Jeu {
-    private Env env; // Environnement 3D
+public abstract class Jeu {
+    protected Env env; // Environnement 3D
     private Room room; // Salle du jeu
     private Profil profil; // Profil du joueur
     private Tux tux; // Personnage du joueur
     private ArrayList<Letter> lettres; // Liste des lettres dans le jeu
     private Dico dico; // Dictionnaire de mots
+    protected Boolean finished = false;
     
 
     // Constructeur du jeu
@@ -43,6 +44,7 @@ public class Jeu {
 
     // Méthode principale du jeu
     public void joue(Partie partie) {
+
         env.setRoom(room); // Régle la salle dans l'environnement
         lettres = new ArrayList<Letter>();
         String mot = dico.getMotDepuisListeNiveaux(2);
@@ -61,7 +63,6 @@ public class Jeu {
 
         démarrePartie(partie); // Initialise la partie
 
-        Boolean finished = false;
         env.addObject(tux); // Ajoute le personnage Tux à l'environnement
 
         while (!finished) {
@@ -109,25 +110,13 @@ public class Jeu {
     }
 
     // Méthode appelée au démarrage d'une nouvelle partie
-    protected void démarrePartie(Partie partie) {
-        // Logique supplémentaire
-    }
+    protected abstract void démarrePartie(Partie partie);
 
     // Méthode pour appliquer les règles du jeu
-    protected void appliqueRegles(Partie partie) {
-        for (Letter letter : lettres) {
-            if (collision(letter)) {
-                // Logique de gestion des collisions ici
-            }
-        }
-        // Autres règles du jeu peuvent être ajoutées ici
-    }
+    protected abstract boolean appliqueRegles(Partie partie) ;
 
     // Méthode appelée à la fin de la partie
-    protected void terminePartie(Partie partie) {
-        // Logique supplémentaire à la fin de la partie
-    }
-
+    protected abstract  void terminePartie(Partie partie) ;
     // Méthode pour calculer la distance entre Tux et une lettre
     protected double distance(Letter letter) {
         double tuxX = tux.getX();
@@ -144,4 +133,7 @@ public class Jeu {
 
         return distance < tux.getScale() + letter.getScale();
     }
+    
 }
+
+
