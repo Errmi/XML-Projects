@@ -72,13 +72,16 @@ public class JeuDevineLeMotOrdre extends Jeu {
 
         if (chrono.remainsTime()) {
             int timeRemaining = chrono.getSeconds();
+            
+            // Affiche le mot à l'écran 
             String motDisplay = "Trouve ce mot : " + partie.getMot();
             motText.modifyTextAndDisplay(motDisplay); 
             
-            if (timeRemaining <= 10) {
+            // Supprimez le mot après 5 secondes de la partie
+            if (timeRemaining <= chrono.getLimite() - 5) {
                 motText.clean();
             }
-
+            
             if (timeRemaining >= 0) {
                 // Met à jour l'affichage du chronomètre
                 String timerDisplay = "Time: " + timeRemaining;
