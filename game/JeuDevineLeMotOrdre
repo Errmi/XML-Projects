@@ -8,49 +8,76 @@ import org.xml.sax.SAXException;
 public class JeuDevineLeMotOrdre extends Jeu {
     private int nbLettresRestantes;
     private Chronometre chrono;
+    private EnvText timerText;
 
-    public JeuDevineLeMotOrdre(int limite) throws SAXException, IOException, ParserConfigurationException {
+    public JeuDevineLeMotOrdre() throws SAXException, IOException, ParserConfigurationException {
         super();
-        chrono = new Chronometre(limite);
+        chrono = new Chronometre(15);
+        timerText = new EnvText(env, "", 20, 50);
     }
 
-    // Override the execute method to start the timer before calling the parent execute method
-    @Override
-    public void execute() {
-        chrono.start(); // Start the timer
-        super.execute(); // Call the parent execute method
-        chrono.stop(); // Stop the timer when the game execution is finished
-    }
-
-    // Override the joue method to check the timer and update game logic accordingly
-    @Override
-    public void joue(Partie partie) {
-                if (!chrono.remainsTime()) {
-                    terminePartie(partie);
+    // Méthode pour vérifier si Tux a trouvé une lettre
+    private boolean tuxTrouveLettre() {
+        ArrayList<Letter> lettres = getLettres();
+        for (Letter lettre : lettres) {
+            if (collision(lettre)) {
+                return true;
+            }
         }
-        super.joue(partie); // Call the parent joue method
-        
-
+        return false;
     }
 
-private boolean tuxTrouveLettre() {
-    ArrayList<Letter> lettres = getLettres();
-    for (Letter lettre : lettres) {
-        if (collision(lettre)) {
-            return true;
-        }
+    // Méthode pour obtenir le nombre de lettres restantes
+    private int getNBLettersRestantes() {
+        // Ajoutez la logique pour calculer le nombre de lettres restantes
+        ArrayList<Letter> lettres = getLettres();
+        return lettres.size();
     }
-    return false;
-}
 
-private int getNBLettersRestantes() {
-    // Add logic to calculate the number of remaining letters
-    ArrayList<Letter> lettres = getLettres();
-    return lettres.size();
-}
-
+    // Méthode pour obtenir le temps écoulé depuis le chronomètre
     private int getTemps() {
-        // Add logic to get the elapsed time from the timer
+        // Ajoutez la logique pour obtenir le temps écoulé depuis le chronomètre
         return (int) chrono.getSeconds();
+    }
+
+    // Méthode appelée au démarrage d'une nouvelle partie
+    protected void démarrePartie(Partie partie) {
+        chrono.start();
+        nbLettresRestantes = getLettres().size();
+    }
+
+    // Méthode pour appliquer les règles du jeu
+    protected boolean appliqueRegles(Partie partie) {
+        boolean res = true;
+
+        if (chrono.remainsTime()) {
+            int timeRemaining = chrono.getSeconds();
+
+            if (timeRemaining >= 0) {
+                // Met à jour l'affichage du chronomètre
+                String timerDisplay = "Time: " + timeRemaining;
+                timerText.modifyTextAndDisplay(timerDisplay);  
+            }
+
+            if (tuxTrouveLettre()) {
+                if (nbLettresRestantes == 0) {
+                    chrono.stop();
+                    finished = true; // Défini finished à true pour sortir de la boucle du jeu
+                }
+            }
+        } else {
+            chrono.stop();
+            finished = true; // Défini finished à true pour sortir de la boucle du jeu lorsque le temps est écoulé
+        }
+
+        return res;
+    }
+
+    // Méthode appelée à la fin de la partie
+    protected void terminePartie(Partie partie) {
+        chrono.stop();
+        partie.setTrouve(nbLettresRestantes);
+        partie.setTemps(chrono.getSeconds());
+        System.out.println("PARTIE TERMINEE");
     }
 }
