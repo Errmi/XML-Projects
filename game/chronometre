@@ -14,6 +14,10 @@ public class Chronometre {
         begin = System.currentTimeMillis();
     }
 
+    public int getLimite() {
+        return limite;
+    }
+
     public void stop() {
         end = System.currentTimeMillis();
     }
@@ -26,8 +30,11 @@ public class Chronometre {
         return end - begin;
     }
 
-    public int getSeconds() {
-        return (int) ((end - begin) / 1000.0);
+    public int getSeconds() { //timer used 
+    current = System.currentTimeMillis();
+    int timeSpent = (int) ((current - begin) / 1000.0);
+    return  limite - timeSpent;
+    
     }
 
     public double getMinutes() {
